@@ -83,37 +83,60 @@ namespace KeyLibraryDAL
                 Db.Open();
                 // Let's query the database for this name
                 sql = "SELECT UserID, Username, Email FROM users WHERE Username = " + name + ";";
+                // run it
                 MySqlCommand Command = new MySqlCommand(sql, Db);
                 var run = Command.ExecuteReader();
+                // While we are reading in results, add the rows to a list of Users
                 while (run.Read())
                     list.Add(new User { UserID = run.GetInt32(0), Username = run.GetString(1), Email = run.GetString(2) });
             }
             catch (MySql.Data.MySqlClient.MySqlException ex)
             {
+                // Something is wrong, print to console
                 Console.WriteLine(ex.Message);
+                // Close the connection - error
                 Db.Close();
             } 
+            // Return result list
             return list;
         }
+         /**
+         * GetAll
+         * Params: none
+         * Returns: List of User objects
+         * Note: Select all rows from the users table and put the results as new user objects in a list
+         */
         public List<User> GetAll()
         {
             var list = new List<User>();
             try
             {
+                // Open connection
                 Db.Open();
+                // Select only pertinent information
                 sql = "SELECT UserID, Username, Email FROM users;";
                 MySqlCommand Command = new MySqlCommand(sql, Db);
                 var run = Command.ExecuteReader();
+                // While results are being read, insert rows as new User objects to the list
                 while (run.Read())
                     list.Add(new User { UserID = run.GetInt32(0), Username = run.GetString(1), Email = run.GetString(2) });
             }
             catch (MySql.Data.MySqlClient.MySqlException ex)
             {
+                // Something is wrong, print the message to console
                 Console.WriteLine(ex.Message);
+                // Close the connection - error
                 Db.Close();
             }
+            // return result list
             return list;
         }
+         /**
+         * Delete
+         * Params: int userId
+         * Returns: success or fail long
+         * Note: Delete a user from the database using passed userId
+         */
         public long Delete(int userId)
         {
             try
